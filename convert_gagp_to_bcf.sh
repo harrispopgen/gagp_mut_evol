@@ -1,13 +1,14 @@
 #!/bin/bash
 
-module load htslib/1.7
-module load bcftools/1.8
+# module load htslib/1.7
+# module load bcftools/1.8
 
-# bcftools view /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.vcf.gz \
-# 	-O b \
-# 	-o /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.bcf
+# Directory should point to the vcf files from GAGP (https://eichlerlab.gs.washington.edu/greatape/data/)
+bcftools view /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.vcf.gz \
+	-O b \
+	-o /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.bcf
 
-# bcftools index /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.bcf
+bcftools index /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_troglodytes.bcf
 
 bcftools view /net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/Pan_paniscus.vcf.gz \
 	-O b \

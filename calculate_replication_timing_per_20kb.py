@@ -3,58 +3,13 @@
 import pdb
 from numpy import mean, isnan, percentile, array
 
-def calculate_replication_timing(window_size):
-	
-	with open('./hg18_replication_timing_%i_bp_windows.bed' % (window_size), 'w') as output_file:
-	
-		output_str = ''
-		
-		with open('./Koren_et_al_Table_S2.txt', 'rU') as open_rep_file:
-		
-			curr_chr = None
-			curr_start_pos = None
-			curr_scores = []
-			line_counter = 0
-		
-			for line in open_rep_file:
-			
-				chr, pos, score = line[:-1].split('\t')
-				if chr == '23':
-					chr = 'X'
-				elif chr == '24':
-					chr = 'Y'
-				chr = 'chr' + chr
-				pos = int(float(pos))
-			
-				if chr != curr_chr: # new chromosome: increment segment
-					if curr_chr is not None:
-						output_str += '%s\t%i\t%i\t%f\n' % (curr_chr, curr_start_pos, curr_start_pos + window_size, mean(curr_scores))
-					curr_chr = chr
-					curr_start_pos = pos
-					curr_scores = [float(score)]
-				elif pos - curr_start_pos > window_size: # close window, increment segments
-					output_str += '%s\t%i\t%i\t%f\n' % (curr_chr, curr_start_pos, curr_start_pos + window_size, mean(curr_scores))
-					line_counter += 1
-					if line_counter == 5000:
-						line_counter = 0
-						output_file.write(output_str)
-						output_str = ''
-					curr_chr = chr
-					curr_start_pos = pos
-					curr_scores = [float(score)]
-				else:
-					curr_scores.append(float(score))
-			
-			output_str += '%s\t%i\t%i\t%f\n' % (curr_chr, curr_start_pos, curr_start_pos + window_size, mean(curr_scores))
-			output_file.write(output_str)
-	
-	return None
-
-def calculate_replication_timing_breakpoints(window_size, n_subsets):
+def calculate_replication_timing_breakpoints(window_size, n_subsets, rep_file='./Koren_et_al_Table_S2.txt'):
 	
 	score_array = []
 	
-	with open('./Koren_et_al_Table_S2.txt', 'rU') as open_rep_file:
+	# Need to download Supplemental Table 2 from Koren et al. 2012 paper with replication timing (z-normalized read counts @ particular time in S1)
+	# Available at http://mccarrolllab.org/resources/
+	with open(rep_file, 'rU') as open_rep_file:
 	
 		curr_chr = None
 		curr_start_pos = None
@@ -110,14 +65,24 @@ def calculate_replication_timing_breakpoints(window_size, n_subsets):
 			return [int(seg[0][3:]), seg[1]]
 	
 	for n, curr_score_array in enumerate(score_array_breakpoints):
-		with open('./replication_timing_compartments/hg18_replication_timing_q%i.bed' % n, 'w') as output_file:
+		with open('./hg18_replication_timing_q%i.bed' % n, 'w') as output_file:
 			curr_score_array.sort(key=sort_seg_function)
 			output = '\n'.join(['\t'.join([x[0], str(x[1]), str(x[1] + window_size)]) for x in curr_score_array])
 			output_file.write(output)
 	
 	return None
 
-
-if __name__ == '__main__':
+def argument_parse():
 	
-	calculate_replication_timing_breakpoints(20000, 4)
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--rep_file", help="Replication timing filename")
+	args = parser.parse_args()
+	return args
+
+# For ms we used highest and lowest quartile replication timing (calculated per 20kb windows) for compartments
+if __name__ == '__main__':
+	args = argument_parse()
+	if args.rep_file:
+		calculate_replication_timing_breakpoints(20000, 4, args.rep_file)
+	else:
+		calculate_replication_timing_breakpoints(20000, 4)

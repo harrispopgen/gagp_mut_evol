@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Generate a summary file of the variants in a single species & chromosome to build references w/ ancestral alleles
+
 import csv
 import glob
 import re
@@ -13,13 +15,14 @@ import itertools
 import numpy as np
 from common import hwe, filter_var, rev_comp, generate_nmer_mutation_list, load_hg18_ref, complement
 
-
 def preprocess_bcf(species, chr):
 	
-	bed_file = "/net/harris/vol1/data/hg18/hg18.bed"
+	bed_file = "./data/hg18.bed"
 	
+	# point to bcf
 	gagp_bcf_filename = '/net/harris/vol1/data/great_ape_genome_project/eichlerlab.gs.washington.edu/greatape/data/VCFs/SNPs/' + species + '.bcf'
 	
+	# Need to make this directory to store preprocessing files
 	with open('./preprocessed_gagp_bcfs_for_ancestral_identification/' + species + '_' + chr + '_var_summaries.txt', 'w') as open_output_file:
 	
 		with pysam.VariantFile(gagp_bcf_filename) as bcf_in:
@@ -63,8 +66,8 @@ def preprocess_bcf(species, chr):
 def argument_parse():
 	
 	parser = argparse.ArgumentParser()
-	parser.add_argument("species", help="Name of species, as defined by GAGP")
-	parser.add_argument("chr", help="Chromosome (e.g. 'chr10', 'chrY')")
+	parser.add_argument("species", help="Name of species, as defined by GAGP (e.g. Homo, Pan_troglodytes)")
+	parser.add_argument("chr", help="Chromosome (e.g. 'chr10')")
 	args = parser.parse_args()
 	return args
 

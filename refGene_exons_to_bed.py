@@ -31,7 +31,20 @@ def list_to_bed(exon_list, outfile):
 	
 	return None
 
-if __name__ == '__main__':
+def argument_parse():
 	
-	exon_list = parse_refgene_to_exon_bed('/net/harris/vol1/data/hg18/hg18_refGene.txt')
-	list_to_bed(exon_list, './hg18_refGene_exons.bed')
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--refgene", help="refGene filename")
+	args = parser.parse_args()
+	return args
+
+
+if __name__ == '__main__':
+	args = argument_parse()
+	# Need the refGene output from UCSC table browser, hg18 build
+	if args.refgene:
+		refgene_file = args.refgene
+	else:
+		refgene_file = './data/hg18/hg18_refGene.txt'
+	exon_list = parse_refgene_to_exon_bed(refgene_file)
+	list_to_bed(exon_list, './data/hg18_refGene_exons.bed')

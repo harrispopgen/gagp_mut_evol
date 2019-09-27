@@ -146,13 +146,10 @@ def generate_nmer_mutation_list(nmer):
 	
 	return nmer_mutations
 	
-def load_hg18_ref(species, chr, exclude_recurrent = False):
+def load_hg18_ref(species, chr, hg18_ref_dir = './hg18_references_with_gagp_ancestral_alleles_exclude_recurrent/'):
 	# Loads up the reference sequence for a specific chromosome. Each species in the GAGP has a special hg18 reference with their ancestral alleles
 	hg18_ref = ''
-	if exclude_recurrent:
-		hg18_ref_filename = './hg18_references_with_gagp_ancestral_alleles_exclude_recurrent/' + species + '_' + chr + '.fa'
-	else:
-		hg18_ref_filename = './hg18_references_with_gagp_ancestral_alleles/' + species + '_' + chr + '.fa'
+	hg18_ref_filename = hg18_ref_dir + species + '_' + chr + '.fa'
 	with open(hg18_ref_filename) as open_hg18_ref:
 		open_hg18_ref.readline()
 		hg18_ref = open_hg18_ref.read()

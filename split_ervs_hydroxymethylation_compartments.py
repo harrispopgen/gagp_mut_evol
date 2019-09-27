@@ -57,10 +57,26 @@ def write_fraction_hmc_list_to_output(outfile, seg_list):
 	
 	return None
 
+def argument_parse():
+	
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--erv_file", help="ERV compartment bed file")
+	parser.add_argument("--hmc_file", help=".txt.gz 5hmC data file, from Yu et al., 2012. GSM882245_H1.hmC_sites.FDR_0.0502.hg18.txt.gz")
+	args = parser.parse_args()
+	return args
+
+
 if __name__ == '__main__':
 	
-	erv_compartment = load_bed_file('../erv_data/hg18_all_erv.bed')
-	hmc_data = load_hmc_data('./ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36173/suppl/GSM882245_H1.hmC_sites.FDR_0.0502.hg18.txt.gz')
+	args = argument_parse()
+	if args.erv_file:
+		erv_compartment = args.erv_file
+	else:
+		erv_compartment = load_bed_file('../erv_data/hg18_all_erv.bed')
+	if args.hmc_file:
+		hmc_data = load_hmc_data(args.hmc_file)
+	else:
+		hmc_data = load_hmc_data('./ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36173/suppl/GSM882245_H1.hmC_sites.FDR_0.0502.hg18.txt.gz')
 	frac_hmc = fraction_hmc(erv_compartment, hmc_data)
 	hmc_low = [x for x in frac_hmc if x[3] == 0.0]
 	hmc_high = [x for x in frac_hmc if x[3] > 0.0]
