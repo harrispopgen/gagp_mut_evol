@@ -1,5 +1,5 @@
 # gagp_mut_evol
-Code for generating the main figures of Goldberg &amp; Harris 2019 preprint
+Code for generating the main figures of Goldberg &amp; Harris 2020
 
 ## Data preprocessing
 Download the Great Ape Genome Project [data](https://eichlerlab.gs.washington.edu/greatape/data/) and convert VCFs to BCF using `convert_gagp_to_bcf.sh`.
